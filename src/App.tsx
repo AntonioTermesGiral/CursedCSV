@@ -1,5 +1,5 @@
 import { Button, Grid2 } from '@mui/material'
-import writeXlsxFile, { Cell } from 'write-excel-file'
+import writeXlsxFile from 'write-excel-file'
 
 function App() {
 

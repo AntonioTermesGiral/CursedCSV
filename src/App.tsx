@@ -101,10 +101,10 @@ function App() {
   }
 
   return (
-    <Grid2 container alignItems="center" justifyContent="center" mt={10} direction="column" spacing={2}>
+    <Grid2 container alignItems="center" justifyContent="center" mt={10} direction="column" spacing={6}>
       Sube tu archivo!
       <input id='csv-input' type='file' accept=".csv, text/csv" />
-      <Button variant='outlined' onClick={handleSubmit}>Convertir a Excel</Button>
+      <Button variant='outlined' onClick={handleSubmit}>Arreglar y convertir a Excel</Button>
     </Grid2>
   )
 }

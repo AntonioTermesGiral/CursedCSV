@@ -6,7 +6,7 @@ function App() {
   const generateXLSX = async (columns: string[], rows: string[][]) => {
     const col_obj = [
       ...columns.map((col) => { return { value: col }; })
-    ] as Object[];
+    ] as object[];
 
     const rows_obj = [
       ...rows.map((row) => {
@@ -21,18 +21,18 @@ function App() {
           },
           {
             type: Date,
-            value: new Date(Date.parse(row[2])),
+            value: new Date(Number.parseInt(row[2])),
             format: 'dd/mm/yyyy',
           },
           {
             type: Number,
             value: Number.parseFloat(row[3])
           }
-        ] as Object[];
+        ] as object[];
       })
     ]
 
-    const data: Object[][] = [
+    const data: object[][] = [
       col_obj,
       ...rows_obj
     ]
@@ -64,12 +64,10 @@ function App() {
           fixedRow = fixedRow.slice(0, -2);
 
           // Date handling
-          const badDateRx = /["][^"]+[ ][^"]+[ ][^"]+["]/g; // ["].*["]
-          let badDate = (fixedRow.match(badDateRx) ?? '').toString();
+          const badDateRx = /["][\w]{2,4}[ ][\d]{1,2}[,][ ][\d]{4}["]/g;
+          const badDate = (fixedRow.match(badDateRx) ?? '').toString();
           const dateTimestamp = Date.parse(badDate);
-          const fixedDate = new Date(dateTimestamp);
-          const fixedDateStr = fixedDate.toLocaleDateString();
-          fixedRow = fixedRow.replace(badDate, fixedDateStr);
+          fixedRow = fixedRow.replace(badDate, dateTimestamp.toString());
 
           // Row mapping
           const currentRow: string[] = [];
@@ -79,33 +77,33 @@ function App() {
           rows.push(currentRow);
         })
 
-        console.log(columns);
-        console.log(rows);
         // File generation
         generateXLSX(columns, rows).then(() => console.log("end"));
 
-      }
-    }
+      } else alert("Las cabeceras no han sido encontradas...");
+    } else alert("El documento está vacio o no se puede leer...");
   }
 
   const handleSubmit = () => {
     const input = document.getElementById("csv-input");
     if (input) {
       const files = (input as HTMLInputElement).files;
-      if (files) {
-        var reader = new FileReader();
+      if (files != null && files.length > 0) {
+        const reader = new FileReader();
         reader.onload = fixCSV;
         reader.readAsText(files[0]);
+      } else {
+        alert("Añade un archivo!!");
       }
     } else {
-      // TODO: show err
+      alert("Input de archivos no encontrado...");
     }
   }
 
   return (
     <Grid2 container alignItems="center" justifyContent="center" mt={10} direction="column" spacing={2}>
       Sube tu archivo!
-      <input id='csv-input' type='file' />
+      <input id='csv-input' type='file' accept=".csv, text/csv" />
       <Button variant='outlined' onClick={handleSubmit}>Convertir a Excel</Button>
     </Grid2>
   )
